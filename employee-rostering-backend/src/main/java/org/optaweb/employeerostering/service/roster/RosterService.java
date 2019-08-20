@@ -19,6 +19,7 @@ package org.optaweb.employeerostering.service.roster;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -37,10 +38,12 @@ import org.optaweb.employeerostering.domain.employee.Employee;
 import org.optaweb.employeerostering.domain.employee.EmployeeAvailability;
 import org.optaweb.employeerostering.domain.employee.view.EmployeeAvailabilityView;
 import org.optaweb.employeerostering.domain.roster.Pagination;
+import org.optaweb.employeerostering.domain.roster.PublishResult;
 import org.optaweb.employeerostering.domain.roster.Roster;
 import org.optaweb.employeerostering.domain.roster.RosterState;
 import org.optaweb.employeerostering.domain.roster.view.AvailabilityRosterView;
 import org.optaweb.employeerostering.domain.roster.view.ShiftRosterView;
+import org.optaweb.employeerostering.domain.rotation.ShiftTemplate;
 import org.optaweb.employeerostering.domain.shift.Shift;
 import org.optaweb.employeerostering.domain.shift.view.ShiftView;
 import org.optaweb.employeerostering.domain.skill.Skill;
@@ -49,6 +52,7 @@ import org.optaweb.employeerostering.service.common.AbstractRestService;
 import org.optaweb.employeerostering.service.common.IndictmentUtils;
 import org.optaweb.employeerostering.service.employee.EmployeeAvailabilityRepository;
 import org.optaweb.employeerostering.service.employee.EmployeeRepository;
+import org.optaweb.employeerostering.service.rotation.ShiftTemplateRepository;
 import org.optaweb.employeerostering.service.shift.ShiftRepository;
 import org.optaweb.employeerostering.service.skill.SkillRepository;
 import org.optaweb.employeerostering.service.solver.WannabeSolverManager;
@@ -58,6 +62,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static java.util.stream.Collectors.groupingBy;
 
 @Service
 public class RosterService extends AbstractRestService {
@@ -69,6 +75,8 @@ public class RosterService extends AbstractRestService {
     private EmployeeAvailabilityRepository employeeAvailabilityRepository;
     private ShiftRepository shiftRepository;
     private RosterParametrizationRepository rosterParametrizationRepository;
+    private ShiftTemplateRepository shiftTemplateRepository;
+
     private WannabeSolverManager solverManager;
     private IndictmentUtils indictmentUtils;
 
@@ -77,6 +85,7 @@ public class RosterService extends AbstractRestService {
                          EmployeeAvailabilityRepository employeeAvailabilityRepository,
                          ShiftRepository shiftRepository,
                          RosterParametrizationRepository rosterParametrizationRepository,
+                         ShiftTemplateRepository shiftTemplateRepository,
                          WannabeSolverManager solverManager, IndictmentUtils indictmentUtils) {
         this.rosterStateRepository = rosterStateRepository;
         this.skillRepository = skillRepository;
@@ -85,6 +94,7 @@ public class RosterService extends AbstractRestService {
         this.employeeAvailabilityRepository = employeeAvailabilityRepository;
         this.shiftRepository = shiftRepository;
         this.rosterParametrizationRepository = rosterParametrizationRepository;
+        this.shiftTemplateRepository = shiftTemplateRepository;
         this.solverManager = solverManager;
         this.indictmentUtils = indictmentUtils;
     }
@@ -353,7 +363,7 @@ public class RosterService extends AbstractRestService {
     }
 
     // ************************************************************************
-    // Solver methods
+    // Solver
     // ************************************************************************
 
     public void solveRoster(Integer tenantId) {
@@ -365,8 +375,38 @@ public class RosterService extends AbstractRestService {
     }
 
     // ************************************************************************
-    // Publishing/Provisioning methods
+    // Publish
     // ************************************************************************
 
-    // TODO: Implement PublishAndProvision()
+    @Transactional
+    public PublishResult publishAndProvision(Integer tenantId) {
+        RosterState rosterState = getRosterState(tenantId);
+        LocalDate publishFrom = rosterState.getFirstDraftDate();
+        LocalDate publishTo = publishFrom.plusDays(rosterState.getPublishLength());
+        LocalDate firstUnplannedDate = rosterState.getFirstUnplannedDate();
+
+        // Publish
+        rosterState.setFirstDraftDate(publishTo);
+
+        // Provision
+        List<ShiftTemplate> shiftTemplateList = shiftTemplateRepository.findAllByTenantId(tenantId);
+        Map<Integer, List<ShiftTemplate>> dayOffsetToShiftTemplateListMap = shiftTemplateList.stream()
+                .collect(groupingBy(ShiftTemplate::getStartDayOffset));
+
+        int dayOffset = rosterState.getUnplannedRotationOffset();
+        LocalDate shiftDate = firstUnplannedDate;
+        for (int i = 0; i < rosterState.getPublishLength(); i++) {
+            List<ShiftTemplate> dayShiftTemplateList = dayOffsetToShiftTemplateListMap.getOrDefault(
+                    dayOffset, Collections.emptyList());
+            for (ShiftTemplate shiftTemplate : dayShiftTemplateList) {
+                Shift shift = shiftTemplate.createShiftOnDate(shiftDate, rosterState.getRotationLength(),
+                                                              rosterState.getTimeZone(), false);
+                shiftRepository.save(shift);
+            }
+            shiftDate = shiftDate.plusDays(1);
+            dayOffset = (dayOffset + 1) % rosterState.getRotationLength();
+        }
+        rosterState.setUnplannedRotationOffset(dayOffset);
+        return new PublishResult(publishFrom, publishTo);
+    }
 }
