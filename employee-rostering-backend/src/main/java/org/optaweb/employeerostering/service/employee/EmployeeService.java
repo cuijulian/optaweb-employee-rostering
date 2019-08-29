@@ -172,6 +172,10 @@ public class EmployeeService extends AbstractRestService {
         }
 
         validateTenantIdParameter(tenantId, employeeAvailabilityOptional.get());
+
+        if (!rosterStateRepository.findByTenantId(tenantId).isPresent()) {
+            throw new EntityNotFoundException("No RosterState entity found with tenantId (" + tenantId + ").");
+        }
         return new EmployeeAvailabilityView(rosterStateRepository.findByTenantId(tenantId).get().getTimeZone(),
                 employeeAvailabilityOptional.get());
     }
@@ -182,6 +186,10 @@ public class EmployeeService extends AbstractRestService {
         EmployeeAvailability employeeAvailability = convertFromEmployeeAvailabilityView(tenantId,
                                                                                         employeeAvailabilityView);
         employeeAvailabilityRepository.save(employeeAvailability);
+
+        if (!rosterStateRepository.findByTenantId(tenantId).isPresent()) {
+            throw new EntityNotFoundException("No RosterState entity found with tenantId (" + tenantId + ").");
+        }
         return new EmployeeAvailabilityView(rosterStateRepository.findByTenantId(tenantId).get().getTimeZone(),
                                             employeeAvailability);
     }
@@ -214,6 +222,9 @@ public class EmployeeService extends AbstractRestService {
         EmployeeAvailability updatedEmployeeAvailability =
                 employeeAvailabilityRepository.saveAndFlush(databaseEmployeeAvailability);
 
+        if (!rosterStateRepository.findByTenantId(tenantId).isPresent()) {
+            throw new EntityNotFoundException("No RosterState entity found with tenantId (" + tenantId + ").");
+        }
         return new EmployeeAvailabilityView(rosterStateRepository.findByTenantId(tenantId).get().getTimeZone(),
                                             updatedEmployeeAvailability);
     }
