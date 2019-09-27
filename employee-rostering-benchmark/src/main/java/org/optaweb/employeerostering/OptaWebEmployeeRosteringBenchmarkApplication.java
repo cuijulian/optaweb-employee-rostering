@@ -52,7 +52,7 @@ public class OptaWebEmployeeRosteringBenchmarkApplication implements Application
         List<Roster> rosterList = generateRosters();
 
         PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
-                "employeeRosteringBenchmarkConfig.xml");
+                "employeeRosteringBenchmarkConfig.xml", getClass().getClassLoader());
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(rosterList);
         plannerBenchmark.benchmarkAndShowReportInBrowser();
     }
@@ -61,6 +61,7 @@ public class OptaWebEmployeeRosteringBenchmarkApplication implements Application
         RosterGenerator rosterGenerator = new RosterGenerator(entityManager);
 
         List<Roster> rosterList = new ArrayList<>();
+        rosterList.add(rosterGenerator.generateRoster(2, 7));
         rosterList.add(rosterGenerator.generateRoster(10, 7));
         rosterList.add(rosterGenerator.generateRoster(80, (28 * 4)));
 
