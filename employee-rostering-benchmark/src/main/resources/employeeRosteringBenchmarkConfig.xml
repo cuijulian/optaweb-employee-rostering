@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<plannerBenchmark>
+  <benchmarkDirectory>local/benchmarkReport</benchmarkDirectory>
+  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
+
+  <inheritedSolverBenchmark>
+    <solver>
+      <solutionClass>org.optaweb.employeerostering.domain.roster.Roster</solutionClass>
+      <entityClass>org.optaweb.employeerostering.domain.shift.Shift</entityClass>
+
+      <scoreDirectorFactory>
+        <scoreDrl>org/optaweb/employeerostering/service/solver/employeeRosteringScoreRules.drl</scoreDrl>
+      </scoreDirectorFactory>
+
+      <termination>
+        <secondsSpentLimit>30</secondsSpentLimit>
+      </termination>
+    </solver>
+  </inheritedSolverBenchmark>
+
+  <solverBenchmark>
+    <name>Tabu Search</name>
+    <solver>
+      <localSearch>
+        <acceptor>
+          <entityTabuSize>11</entityTabuSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>300</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+  <solverBenchmark>
+    <name>Late Acceptance</name>
+    <solver>
+      <localSearch>
+        <acceptor>
+          <lateAcceptanceSize>50</lateAcceptanceSize>
+        </acceptor>
+        <forager>
+          <acceptedCountLimit>4</acceptedCountLimit>
+        </forager>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+</plannerBenchmark>

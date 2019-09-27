@@ -24,10 +24,8 @@ import javax.persistence.PersistenceContext;
 
 import org.optaplanner.benchmark.api.PlannerBenchmark;
 import org.optaplanner.benchmark.api.PlannerBenchmarkFactory;
-import org.optaplanner.core.api.solver.SolverFactory;
 import org.optaweb.employeerostering.domain.roster.Roster;
 import org.optaweb.employeerostering.service.roster.RosterGenerator;
-import org.optaweb.employeerostering.service.solver.WannabeSolverManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -51,15 +49,12 @@ public class OptaWebEmployeeRosteringBenchmarkApplication implements Application
     @Override
     @Transactional
     public void run(ApplicationArguments args) {
-        logger.info("Started benchmark application");
-
         List<Roster> rosterList = generateRosters();
-        SolverFactory<Roster> solverFactory = SolverFactory.createFromXmlResource(
-                "org/optaweb/employeerostering/service/solver/employeeRosteringSolverConfig.xml",
-                WannabeSolverManager.class.getClassLoader());
-        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromSolverFactory(solverFactory);
+
+        PlannerBenchmarkFactory benchmarkFactory = PlannerBenchmarkFactory.createFromXmlResource(
+                "employeeRosteringBenchmarkConfig.xml");
         PlannerBenchmark plannerBenchmark = benchmarkFactory.buildPlannerBenchmark(rosterList);
-        plannerBenchmark.benchmark();
+        plannerBenchmark.benchmarkAndShowReportInBrowser();
     }
 
     private List<Roster> generateRosters() {
