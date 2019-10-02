@@ -428,31 +428,32 @@ public class RosterGenerator implements ApplicationRunner {
                 return;
             case DEMO_DATA:
                 tenantNameGenerator.predictMaximumSizeAndReset(12);
-                generateRoster(10, 7, hospitalGeneratorType, zoneId);
-                generateRoster(10, 7, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(10, 7, guardSecurityGeneratorType, zoneId);
-                generateRoster(10, 7, callCenterGeneratorType, zoneId);
-                generateRoster(10, 7, postOfficeGeneratorType, zoneId);
-                generateRoster(10, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(20, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(40, 7 * 2, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(80, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(10, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(20, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(40, 7 * 2, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(80, 7 * 4, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(10, 7, 5, hospitalGeneratorType, zoneId);
+                generateRoster(10, 7, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(10, 7, 5, guardSecurityGeneratorType, zoneId);
+                generateRoster(10, 7, 5, callCenterGeneratorType, zoneId);
+                generateRoster(10, 7, 5, postOfficeGeneratorType, zoneId);
+                generateRoster(10, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(20, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(40, 7 * 2, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(80, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(10, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(20, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(40, 7 * 2, 5, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(80, 7 * 4, 5, factoryAssemblyGeneratorType, zoneId);
         }
     }
 
     @Transactional
     public Roster generateRoster(int spotListSize,
                                  int lengthInDays,
+                                 int workDaysPerWeek,
                                  RosterGenerator.GeneratorType generatorType,
                                  ZoneId zoneId) {
         int maxShiftSizePerDay = generatorType.timeslotRangeList.size() + EXTRA_SHIFT_THRESHOLDS.length;
         // The average employee works 5 days out of 7
-        int employeeListSize = spotListSize * maxShiftSizePerDay * 7 / 5;
-        int skillListSize = (spotListSize + 4) / 5;
+        int employeeListSize = spotListSize * maxShiftSizePerDay * 7 / workDaysPerWeek;
+        int skillListSize = (spotListSize + 4) / workDaysPerWeek;
 
         Tenant tenant = createTenant(generatorType, employeeListSize);
         Integer tenantId = tenant.getId();
@@ -478,9 +479,9 @@ public class RosterGenerator implements ApplicationRunner {
     }
 
     @Transactional
-    public Roster generateRoster(int spotListSize, int lengthInDays) {
+    public Roster generateRoster(int spotListSize, int lengthInDays, int workDaysPerWeek) {
         ZoneId zoneId = SystemPropertiesRetriever.determineZoneId();
-        return generateRoster(spotListSize, lengthInDays, factoryAssemblyGeneratorType, zoneId);
+        return generateRoster(spotListSize, lengthInDays, workDaysPerWeek, factoryAssemblyGeneratorType, zoneId);
     }
 
     @Transactional

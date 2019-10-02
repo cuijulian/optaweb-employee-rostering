@@ -117,7 +117,7 @@ public class SolverTest {
         Solver<Roster> solver = getSolverFactory().buildSolver();
 
         RosterGenerator rosterGenerator = buildRosterGenerator();
-        Roster roster = rosterGenerator.generateRoster(10, 7);
+        Roster roster = rosterGenerator.generateRoster(10, 7, 5);
 
         roster = solver.solve(roster);
         assertNotNull(roster.getScore());

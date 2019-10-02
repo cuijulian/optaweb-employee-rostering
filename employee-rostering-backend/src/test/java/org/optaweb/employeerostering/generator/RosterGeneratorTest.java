@@ -98,7 +98,7 @@ public class RosterGeneratorTest {
     
     @Before
     public void setup() {
-        tenantId = rosterGenerator.generateRoster(2, 7).getTenantId();
+        tenantId = rosterGenerator.generateRoster(2, 7, 5).getTenantId();
     }
     
     @After

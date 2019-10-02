@@ -59,7 +59,7 @@ public class SolverManagerTest {
         WannabeSolverManager solverManager = new WannabeSolverManager(taskExecutor, rosterService);
         solverManager.setUpSolverFactory();
 
-        Roster roster = rosterGenerator.generateRoster(10, 7);
+        Roster roster = rosterGenerator.generateRoster(10, 7, 5);
 
         CountDownLatch solverEndedLatch = solverManager.solve(roster.getTenantId());
 

@@ -72,6 +72,20 @@
   </solverBenchmark>
 
   <solverBenchmark>
+    <name>Move Selector and Pillar Move Selector</name>
+    <solver>
+      <localSearch>
+        <unionMoveSelector>
+          <changeMoveSelector/>
+          <swapMoveSelector/>
+          <pillarChangeMoveSelector/>
+          <pillarSwapMoveSelector/>
+        </unionMoveSelector>
+      </localSearch>
+    </solver>
+  </solverBenchmark>
+
+  <solverBenchmark>
     <name>Long Tabu Search</name>
     <solver>
       <localSearch>
