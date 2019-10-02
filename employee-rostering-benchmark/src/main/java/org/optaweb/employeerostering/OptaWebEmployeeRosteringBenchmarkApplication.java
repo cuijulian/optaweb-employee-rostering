@@ -62,6 +62,7 @@ public class OptaWebEmployeeRosteringBenchmarkApplication implements Application
 
         List<Roster> rosterList = new ArrayList<>();
         rosterList.add(rosterGenerator.generateRoster(20, 28 * 4, 100));
+        rosterList.add(rosterGenerator.generateRoster(100, 28 * 4, 100));
 
         return rosterList;
     }
