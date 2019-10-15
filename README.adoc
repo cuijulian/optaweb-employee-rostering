@@ -55,7 +55,7 @@ After building the project above, run the benchmark application with:
 
 [source,shell]
 ----
-java -jar employee-rostering-benchmark/target/employee-rostering-benchmark-7.28.0-SNAPSHOT.jar
+java -jar employee-rostering-benchmark/target/employee-rostering-benchmark-*.jar
 ----
 
 Note: make sure to run the project application and benchmark application on different ports if they are run
