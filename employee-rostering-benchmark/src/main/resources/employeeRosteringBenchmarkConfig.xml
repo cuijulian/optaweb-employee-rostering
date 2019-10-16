@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plannerBenchmark>
   <benchmarkDirectory>local/benchmarkReport</benchmarkDirectory>
-  <warmUpSecondsSpentLimit>30</warmUpSecondsSpentLimit>
 
   <inheritedSolverBenchmark>
     <solver>
@@ -13,7 +12,7 @@
       </scoreDirectorFactory>
 
       <termination>
-        <secondsSpentLimit>10</secondsSpentLimit>
+        <secondsSpentLimit>1</secondsSpentLimit>
       </termination>
     </solver>
   </inheritedSolverBenchmark>
@@ -25,139 +24,14 @@
   </solverBenchmark>
 
   <solverBenchmark>
-    <name>Move Selector</name>
+    <name>Change Move Selector</name>
     <solver>
       <localSearch>
         <unionMoveSelector>
           <changeMoveSelector/>
-          <swapMoveSelector/>
         </unionMoveSelector>
       </localSearch>
     </solver>
   </solverBenchmark>
 
-  <solverBenchmark>
-    <name>Pillar Change Move Selector</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <pillarChangeMoveSelector/>
-        </unionMoveSelector>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Pillar Swap Move Selector</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Pillar Change and Swap Move Selector</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <pillarChangeMoveSelector/>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Move Selector and Pillar Move Selector</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <pillarChangeMoveSelector/>
-          <pillarSwapMoveSelector/>
-        </unionMoveSelector>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Move Selector and Sequential Pillar Move Selector</name>
-    <solver>
-      <localSearch>
-        <unionMoveSelector>
-          <changeMoveSelector/>
-          <swapMoveSelector/>
-          <pillarChangeMoveSelector>
-            <subPillarType>SEQUENCE</subPillarType>
-            <subPillarSequenceComparatorClass>org.optaweb.employeerostering.solver.ShiftComparator</subPillarSequenceComparatorClass>
-          </pillarChangeMoveSelector>
-          <pillarSwapMoveSelector>
-            <subPillarType>SEQUENCE</subPillarType>
-            <subPillarSequenceComparatorClass>org.optaweb.employeerostering.solver.ShiftComparator</subPillarSequenceComparatorClass>
-          </pillarSwapMoveSelector>
-        </unionMoveSelector>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Long Tabu Search</name>
-    <solver>
-      <localSearch>
-        <acceptor>
-          <entityTabuSize>11</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>1100</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Medium Tabu Search</name>
-    <solver>
-      <localSearch>
-        <acceptor>
-          <entityTabuSize>7</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>800</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Simulated Annealing</name>
-    <solver>
-      <localSearch>
-        <acceptor>
-          <simulatedAnnealingStartingTemperature>0hard/0medium/8soft</simulatedAnnealingStartingTemperature>
-          <entityTabuSize>5</entityTabuSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>4</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
-
-  <solverBenchmark>
-    <name>Late Acceptance</name>
-    <solver>
-      <localSearch>
-        <acceptor>
-          <lateAcceptanceSize>500</lateAcceptanceSize>
-        </acceptor>
-        <forager>
-          <acceptedCountLimit>1</acceptedCountLimit>
-        </forager>
-      </localSearch>
-    </solver>
-  </solverBenchmark>
 </plannerBenchmark>
