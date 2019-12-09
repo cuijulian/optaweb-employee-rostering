@@ -380,6 +380,29 @@ public class RosterGenerator implements ApplicationRunner {
                 : startDayOffset < 2 ? 2 : startDayOffset < 4 ? 1 : startDayOffset < 7 ? 2 : -1;
     });
 
+    private final GeneratorType SAQGeneratorType = new GeneratorType(
+            "SAQ",
+            new StringDataGenerator()
+                    .addPart("CV",
+                             "COS",
+                             "CSS"),
+            new StringDataGenerator()
+                    .addPart("23156",
+                             "23498",
+                             "23784",
+                             "23960",
+                             "23014",
+                             "23980",
+                             "23871",
+                             "23000"),
+            Arrays.asList(
+                    Triple.of(LocalTime.of(9, 0), LocalTime.of(17, 0), WEEKDAYS)),
+            7, 3, (startDayOffset, timeslotRangesIndex) -> {
+        return timeslotRangesIndex == 0
+                ? startDayOffset < 1 ? 1 : startDayOffset < 6 ? 0 : startDayOffset < 7 ? 1 : -1
+                : startDayOffset < 2 ? 2 : startDayOffset < 4 ? 1 : startDayOffset < 7 ? 2 : -1;
+    });
+
     private Random random;
 
     @PersistenceContext
@@ -427,20 +450,7 @@ public class RosterGenerator implements ApplicationRunner {
             case EMPTY:
                 return;
             case DEMO_DATA:
-                tenantNameGenerator.predictMaximumSizeAndReset(12);
-                generateRoster(10, 7, hospitalGeneratorType, zoneId);
-                generateRoster(10, 7, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(10, 7, guardSecurityGeneratorType, zoneId);
-                generateRoster(10, 7, callCenterGeneratorType, zoneId);
-                generateRoster(10, 7, postOfficeGeneratorType, zoneId);
-                generateRoster(10, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(20, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(40, 7 * 2, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(80, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(10, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(20, 7 * 4, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(40, 7 * 2, factoryAssemblyGeneratorType, zoneId);
-                generateRoster(80, 7 * 4, factoryAssemblyGeneratorType, zoneId);
+                generateRoster(8, 7, SAQGeneratorType, zoneId);
         }
     }
 
@@ -450,9 +460,8 @@ public class RosterGenerator implements ApplicationRunner {
                                  RosterGenerator.GeneratorType generatorType,
                                  ZoneId zoneId) {
         int maxShiftSizePerDay = generatorType.timeslotRangeList.size() + EXTRA_SHIFT_THRESHOLDS.length;
-        // The average employee works 5 days out of 7
-        int employeeListSize = spotListSize * maxShiftSizePerDay * 7 / 5;
-        int skillListSize = (spotListSize + 4) / 5;
+        int employeeListSize = 17;
+        int skillListSize = 3;
 
         Tenant tenant = createTenant(generatorType, employeeListSize);
         Integer tenantId = tenant.getId();
@@ -485,8 +494,7 @@ public class RosterGenerator implements ApplicationRunner {
 
     @Transactional
     public Tenant createTenant(GeneratorType generatorType, int employeeListSize) {
-        String tenantName = generatorType.tenantNamePrefix + " " + tenantNameGenerator.generateNextValue() + " ("
-                + employeeListSize + " employees)";
+        String tenantName = generatorType.tenantNamePrefix + " (" + employeeListSize + " employees)";
         Tenant tenant = new Tenant(tenantName);
         entityManager.persist(tenant);
         return tenant;

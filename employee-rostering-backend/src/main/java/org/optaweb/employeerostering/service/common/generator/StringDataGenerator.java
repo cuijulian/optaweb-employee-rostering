@@ -24,49 +24,23 @@ public class StringDataGenerator {
     public static StringDataGenerator buildFullNames() {
         return new StringDataGenerator()
                 .addPart(true, 0,
-                         "Amy",
-                         "Beth",
-                         "Chad",
-                         "Dan",
-                         "Elsa",
-                         "Flo",
-                         "Gus",
-                         "Hugo",
-                         "Ivy",
-                         "Jay")
-                .addPart(false, 1,
-                         "A.",
-                         "B.",
-                         "C.",
-                         "D.",
-                         "E.",
-                         "F.",
-                         "G.",
-                         "H.",
-                         "I.",
-                         "J.")
-                .addPart(false, 1,
-                         "O.",
-                         "P.",
-                         "Q.",
-                         "R.",
-                         "S.",
-                         "T.",
-                         "U.",
-                         "V.",
-                         "W.",
-                         "X.")
-                .addPart(false, 1,
-                         "Cole",
-                         "Fox",
-                         "Green",
-                         "Jones",
-                         "King",
-                         "Li",
-                         "Poe",
-                         "Rye",
-                         "Smith",
-                         "Watt");
+                         "1111111",
+                         "2222222",
+                         "3333333",
+                         "4444444",
+                         "5555555",
+                         "6666666",
+                         "7777777",
+                         "8888888",
+                         "9999999",
+                         "1112222",
+                         "2223333",
+                         "3334444",
+                         "4445555",
+                         "5556666",
+                         "6667777",
+                         "7778888",
+                         "8889999");
     }
 
     public static StringDataGenerator buildCompanyNames() {
@@ -340,9 +314,8 @@ public class StringDataGenerator {
         }
         index++;
         if (capitalizeFirstLetter) {
-            result.setCharAt(0 , Character.toUpperCase(result.charAt(0)));
+            result.setCharAt(0, Character.toUpperCase(result.charAt(0)));
         }
         return result.toString();
     }
-
 }
